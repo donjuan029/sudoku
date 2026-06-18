@@ -3,6 +3,8 @@ package br.com.dio.model;
 import java.util.Collection;
 import java.util.List;
 
+import static br.com.dio.model.SudokuValidator.validate;
+
 import static br.com.dio.model.GameStatusEnum.COMPLETE;
 import static br.com.dio.model.GameStatusEnum.INCOMPLETE;
 import static br.com.dio.model.GameStatusEnum.NON_STARTED;
@@ -34,8 +36,19 @@ public class Board {
             return false;
         }
 
-        return spaces.stream().flatMap(Collection::stream)
-                .anyMatch(s -> nonNull(s.getActual()) && !s.getActual().equals(s.getExpected()));
+        return !SudokuValidator.validate(spaces).isEmpty();
+    }
+
+    /**
+     * Retorna mensagens descritivas de cada violação encontrada.
+     * Lista vazia indica ausência de erros.
+     */
+    public List<String> getErrors(){
+        if(getStatus() == NON_STARTED){
+            return List.of();
+        }
+
+        return SudokuValidator.validate(spaces);
     }
 
     public boolean changeValue(final int col, final int row, final int value){
