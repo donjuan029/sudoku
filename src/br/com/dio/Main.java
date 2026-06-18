@@ -135,8 +135,10 @@ public class Main {
         }
 
         System.out.printf("O jogo atualmente se encontra no status %s\n", board.getStatus().getLabel());
-        if(board.hasErrors()){
-            System.out.println("O jogo contém erros");
+        var errors = board.getErrors();
+        if(!errors.isEmpty()){
+            System.out.println("O jogo contém erros:");
+            errors.forEach(e -> System.out.println("  - " + e));
         } else {
             System.out.println("O jogo não contém erros");
         }
@@ -171,7 +173,8 @@ public class Main {
             showCurrentGame();
             board = null;
         } else if (board.hasErrors()) {
-            System.out.println("Seu jogo contém erros, verifique seu board e ajuste-o");
+            System.out.println("Seu jogo contém erros, verifique seu board e ajuste-o:");
+            board.getErrors().forEach(e -> System.out.println("  - " + e));
         } else {
             System.out.println("Você ainda precisa preencher algum espaço");
         }
