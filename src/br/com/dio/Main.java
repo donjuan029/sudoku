@@ -81,7 +81,7 @@ public class Main {
 
     private static void inputNumber() {
         if (isNull(board)){
-            System.out.println("O jogo ainda não foi iniciado iniciado");
+            System.out.println("O jogo ainda não foi iniciado");
             return;
         }
 
@@ -98,7 +98,7 @@ public class Main {
 
     private static void removeNumber() {
         if (isNull(board)){
-            System.out.println("O jogo ainda não foi iniciado iniciado");
+            System.out.println("O jogo ainda não foi iniciado");
             return;
         }
 
@@ -113,7 +113,7 @@ public class Main {
 
     private static void showCurrentGame() {
         if (isNull(board)){
-            System.out.println("O jogo ainda não foi iniciado iniciado");
+            System.out.println("O jogo ainda não foi iniciado");
             return;
         }
 
@@ -130,7 +130,7 @@ public class Main {
 
     private static void showGameStatus() {
         if (isNull(board)){
-            System.out.println("O jogo ainda não foi iniciado iniciado");
+            System.out.println("O jogo ainda não foi iniciado");
             return;
         }
 
@@ -144,7 +144,7 @@ public class Main {
 
     private static void clearGame() {
         if (isNull(board)){
-            System.out.println("O jogo ainda não foi iniciado iniciado");
+            System.out.println("O jogo ainda não foi iniciado");
             return;
         }
 
@@ -162,7 +162,7 @@ public class Main {
 
     private static void finishGame() {
         if (isNull(board)){
-            System.out.println("O jogo ainda não foi iniciado iniciado");
+            System.out.println("O jogo ainda não foi iniciado");
             return;
         }
 
@@ -171,9 +171,9 @@ public class Main {
             showCurrentGame();
             board = null;
         } else if (board.hasErrors()) {
-            System.out.println("Seu jogo conté, erros, verifique seu board e ajuste-o");
+            System.out.println("Seu jogo contém erros, verifique seu board e ajuste-o");
         } else {
-            System.out.println("Você ainda precisa preenhcer algum espaço");
+            System.out.println("Você ainda precisa preencher algum espaço");
         }
     }
 
