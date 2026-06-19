@@ -3,8 +3,6 @@ package br.com.dio.model;
 import java.util.Collection;
 import java.util.List;
 
-import static br.com.dio.model.SudokuValidator.validate;
-
 import static br.com.dio.model.GameStatusEnum.COMPLETE;
 import static br.com.dio.model.GameStatusEnum.INCOMPLETE;
 import static br.com.dio.model.GameStatusEnum.NON_STARTED;
@@ -23,60 +21,96 @@ public class Board {
         return spaces;
     }
 
-    public GameStatusEnum getStatus(){
-        if (spaces.stream().flatMap(Collection::stream).noneMatch(s -> !s.isFixed() && nonNull(s.getActual()))){
+    // -------------------------------------------------------------------------
+    // Status
+    // -------------------------------------------------------------------------
+
+    public GameStatusEnum getStatus() {
+        if (noUserInputYet()) {
             return NON_STARTED;
         }
-
-        return spaces.stream().flatMap(Collection::stream).anyMatch(s -> isNull(s.getActual())) ? INCOMPLETE : COMPLETE;
+        return hasEmptyCells() ? INCOMPLETE : COMPLETE;
     }
 
-    public boolean hasErrors(){
-        if(getStatus() == NON_STARTED){
+    /**
+     * Verdadeiro quando nenhuma célula não-fixa foi preenchida ainda.
+     */
+    private boolean noUserInputYet() {
+        return allCells().noneMatch(s -> !s.isFixed() && nonNull(s.getActual()));
+    }
+
+    /**
+     * Verdadeiro quando ainda há células sem valor (fixas ou não).
+     */
+    private boolean hasEmptyCells() {
+        return allCells().anyMatch(s -> isNull(s.getActual()));
+    }
+
+    // -------------------------------------------------------------------------
+    // Validação
+    // -------------------------------------------------------------------------
+
+    public boolean hasErrors() {
+        if (getStatus() == NON_STARTED) {
             return false;
         }
-
-        return !SudokuValidator.validate(spaces).isEmpty();
+        return !getErrors().isEmpty();
     }
 
     /**
      * Retorna mensagens descritivas de cada violação encontrada.
      * Lista vazia indica ausência de erros.
      */
-    public List<String> getErrors(){
-        if(getStatus() == NON_STARTED){
+    public List<String> getErrors() {
+        if (getStatus() == NON_STARTED) {
             return List.of();
         }
-
         return SudokuValidator.validate(spaces);
     }
 
-    public boolean changeValue(final int col, final int row, final int value){
+    // -------------------------------------------------------------------------
+    // Mutação
+    // -------------------------------------------------------------------------
+
+    public boolean changeValue(final int col, final int row, final int value) {
         var space = spaces.get(col).get(row);
-        if (space.isFixed()){
+        if (space.isFixed()) {
             return false;
         }
-
         space.setActual(value);
         return true;
     }
 
-    public boolean clearValue(final int col, final int row){
+    public boolean clearValue(final int col, final int row) {
         var space = spaces.get(col).get(row);
-        if (space.isFixed()){
+        if (space.isFixed()) {
             return false;
         }
-
         space.clearSpace();
         return true;
     }
 
-    public void reset(){
-        spaces.forEach(c -> c.forEach(Space::clearSpace));
+    public void reset() {
+        allCells().forEach(Space::clearSpace);
     }
 
-    public boolean gameIsFinished(){
-        return !hasErrors() && getStatus().equals(COMPLETE);
+    // -------------------------------------------------------------------------
+    // Conclusão
+    // -------------------------------------------------------------------------
+
+    public boolean gameIsFinished() {
+        return getStatus() == COMPLETE && !hasErrors();
     }
 
+    // -------------------------------------------------------------------------
+    // Utilitário interno
+    // -------------------------------------------------------------------------
+
+    /**
+     * Stream plano de todas as 81 células do board.
+     * Centraliza o flatMap para evitar repetição.
+     */
+    private java.util.stream.Stream<Space> allCells() {
+        return spaces.stream().flatMap(Collection::stream);
+    }
 }
